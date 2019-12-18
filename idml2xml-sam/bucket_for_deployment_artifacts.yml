@@ -1,0 +1,60 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >
+  Prepare an S3 bucket for deployment artifacts used by AWS SAM
+  $ . .env
+  $ aws cloudformation create-stack \
+      --region us-east-1 \
+      --stack-name=${IDML2XML_SAM_PREFIX}-artifacts-stack \
+      --capabilities CAPABILITY_IAM \
+      --template-body "file://bucket_for_deployment_artifacts.yml" \
+      --parameters "ParameterKey=BucketName,ParameterValue=${IDML2XML_SAM_PREFIX}-bucket" 
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: "The name for the S3 Bucket holding deployment artifacts"
+    MinLength: 4
+    MaxLength: 253
+
+Resources:
+  DeploymentArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: BucketOwnerFullControl
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+    DeletionPolicy: Retain
+
+  # Encrypt the bucket  
+  DeploymentArtifactsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DeploymentArtifactsBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Sid: DenyUnEncryptedObjectUploads
+            Effect: Deny
+            Principal: "*"
+            Action: s3:PutObject
+            Resource: !Join [ "", [ !GetAtt DeploymentArtifactsBucket.Arn, "/*" ] ]
+            Condition:
+              StringNotEquals: 
+                s3:x-amz-server-side-encryption: AES256
+          -
+            Sid: DenyInsecureConnections
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource: !Join [ "", [ !GetAtt DeploymentArtifactsBucket.Arn, "/*" ] ]
+            Condition:
+              Bool:
+                aws:SecureTransport: false

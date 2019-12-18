@@ -1,0 +1,132 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Transform IDML files exported from InDesign into Hub XML files using a Transpect module
+
+  $ cp .env.template .env  
+  $ ./build.sh
+  $ ./deploy.sh
+
+Parameters:
+  DeploymentArtifactsBucket:
+    Type: String
+    Description: "The name for the S3 Bucket holding deployment artifacts (see bucket_for_deployment_artifacts.yml)"
+    MinLength: 4
+    MaxLength: 253
+  
+Globals:
+  Function:
+    Timeout: 120
+    Runtime: java8
+
+Resources:
+  TranspectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: TranspectFunction
+      Handler: com.codeburl.IDMLHandler::handleEvent
+      Events:
+        BucketEvent:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: SourceIDMLBucket
+            Events:
+              - 's3:ObjectCreated:*'
+      Policies:
+        - AWSLambdaExecute
+        - Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: !GetAtt SourceIDMLBucket.Arn
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: !GetAtt ResultXMLBucket.Arn
+
+  SourceIDMLBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: BucketOwnerFullControl
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+
+  # Encrypt the bucket  
+  SourceIDMLBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SourceIDMLBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Sid: DenyUnEncryptedObjectUploads
+            Effect: Deny
+            Principal: "*"
+            Action: s3:PutObject
+            Resource: !Join [ "", [ !GetAtt SourceIDMLBucket.Arn, "/*" ] ]
+            Condition:
+              StringNotEquals: 
+                s3:x-amz-server-side-encryption: AES256
+          -
+            Sid: DenyInsecureConnections
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource: !Join [ "", [ !GetAtt SourceIDMLBucket.Arn, "/*" ] ]
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+
+  ResultXMLBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: BucketOwnerFullControl
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+
+  # Encrypt the bucket  
+  ResultXMLBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ResultXMLBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Sid: DenyUnEncryptedObjectUploads
+            Effect: Deny
+            Principal: "*"
+            Action: s3:PutObject
+            Resource: !Join [ "", [ !GetAtt ResultXMLBucket.Arn, "/*" ] ]
+            Condition:
+              StringNotEquals: 
+                s3:x-amz-server-side-encryption: AES256
+          -
+            Sid: DenyInsecureConnections
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource: !Join [ "", [ !GetAtt ResultXMLBucket.Arn, "/*" ] ]
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+
+
+Outputs:
+  SourceIDMLBucket:
+    Description: Place IDML files in this S3 bucket for automatic transformation into Hub XML
+    Value: !Ref "SourceIDMLBucket"
+  ResultIDMLBucket:
+    Description: Converted Hub XML result files end up in this S3 bucket after transformation from XML
+    Value: !Ref "ResultXMLBucket"
