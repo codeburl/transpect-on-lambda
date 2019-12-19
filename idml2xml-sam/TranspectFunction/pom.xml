@@ -42,5 +42,19 @@
         </executions>
       </plugin>
     </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/resources/idml2xml-frontend</directory>
+        <includes>
+          <include>idml2xml/</include>
+          <include>schema/</include>
+          <include>xmlcatalog/</include>
+          <include>xpl/</include>
+          <include>xproc-util/</include>
+          <include>xslt-util/</include>
+        </includes>
+      </resource>
+    </resources>
   </build>
 </project>

@@ -25,3 +25,6 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
+
+idml2xml-sam/TranspectFunction/src/resources/
+
