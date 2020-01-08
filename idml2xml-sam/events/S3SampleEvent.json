@@ -15,7 +15,7 @@
                 "configurationId": "testConfigRule", 
                 "object": {
                     "eTag": "1c43a0c9dcc31572b5e49c0b42f8b17f", 
-                    "key": "input.idml", 
+                    "key": "hello-world.idml", 
                     "sequencer": "0A1B2C3D4E5F678901", 
                     "size": 1024
                 }, 
@@ -23,8 +23,8 @@
                     "ownerIdentity": {
                         "principalId": "EXAMPLE"
                     }, 
-                    "name": "idml2xml-sam-example-bucket", 
-                    "arn": "arn:aws:s3:::idml2xml-sam-example-bucket"
+                    "name": "codeburldev.com-files", 
+                    "arn": "arn:aws:s3:::codeburldev.com-files"
                 }, 
                 "s3SchemaVersion": "1.0"
             }, 
