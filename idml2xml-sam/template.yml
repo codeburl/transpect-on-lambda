@@ -25,6 +25,9 @@ Resources:
     Properties:
       CodeUri: TranspectFunction
       Handler: com.codeburl.IDMLHandler::handleEvent
+      Environment:
+        Variables:
+          JAVA_TOOL_OPTIONS: -Dxml.catalog.files=calabash/xmlcatalog/catalog.xml -Dlog4j.configurationFile=log4j2.xml
       Events:
         BucketEvent:
           Type: S3
@@ -41,6 +44,10 @@ Resources:
             Action:
               - s3:GetObject
             Resource: !GetAtt SourceIDMLBucket.Arn
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: ["arn:aws:s3:::codeburldev.com-files/hello-world.idml"]
           - Effect: Allow
             Action:
               - s3:PutObject

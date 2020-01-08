@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xproc-config xmlns="http://xmlcalabash.com/ns/configuration"
+  xmlns:tr="http://transpect.io"
+  xmlns:tr-internal="http://transpect.io/internal">
+
+  <!-- Real class-name is class-name="io.transpect.calabash.extensions.UnZip"
+       Modified here only for packaging.
+       See https://github.com/transpect/unzip-extension -->
+  <implementation type="tr-internal:unzip"                class-name="com.codeburl.UnZip"/>
+  
+</xproc-config>

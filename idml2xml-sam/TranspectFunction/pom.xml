@@ -13,15 +13,45 @@
 
   <dependencies>
     <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-lambda-java-core</artifactId>
+        <version>1.1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-lambda-java-events</artifactId>
+        <version>2.2.7</version>
+    </dependency>
+    <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-java-sdk-s3</artifactId>
+        <version>1.11.163</version>
+    </dependency>
+    <dependency>
       <groupId>com.amazonaws</groupId>
-      <artifactId>aws-lambda-java-core</artifactId>
-      <version>1.2.0</version>
+      <artifactId>aws-lambda-java-log4j2</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.8.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.8.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>2.8.2</version>
     </dependency>
 		<dependency>
 			<groupId>com.xmlcalabash</groupId>
 			<artifactId>xmlcalabash</artifactId>
 			<version>1.1.30-99</version>
-		</dependency>
+    </dependency>
   </dependencies>
 
   <build>
@@ -31,7 +61,8 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.1.1</version>
         <configuration>
-          </configuration>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+        </configuration>
         <executions>
           <execution>
             <phase>package</phase>
@@ -45,15 +76,28 @@
 
     <resources>
       <resource>
+        <directory>src/main/resources/</directory>
+      </resource>
+      <resource>
         <directory>src/resources/idml2xml-frontend</directory>
         <includes>
+          <include>calabash/</include>
           <include>idml2xml/</include>
+          <include>sample/</include>
           <include>schema/</include>
           <include>xmlcatalog/</include>
           <include>xpl/</include>
           <include>xproc-util/</include>
           <include>xslt-util/</include>
         </includes>
+        <excludes>
+          <exclude>calabash/distro/</exclude>
+          <exclude>calabash/docs/</exclude>
+          <exclude>calabash/lib/</exclude>
+          <exclude>calabash/saxon/</exclude>
+          <exclude>calabash/schemas/</exclude>
+          <exclude>calabash/*.*</exclude>
+        </excludes>
       </resource>
     </resources>
   </build>
