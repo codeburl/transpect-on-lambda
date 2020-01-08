@@ -28,6 +28,7 @@ Resources:
       Environment:
         Variables:
           JAVA_TOOL_OPTIONS: -Dxml.catalog.files=calabash/xmlcatalog/catalog.xml -Dlog4j.configurationFile=log4j2.xml
+          OUTPUT_BUCKET: !GetAtt ResultXMLBucket.arn
       Events:
         BucketEvent:
           Type: S3
