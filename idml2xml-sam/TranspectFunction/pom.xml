@@ -13,19 +13,19 @@
 
   <dependencies>
     <dependency>
-        <groupId>com.amazonaws</groupId>
-        <artifactId>aws-lambda-java-core</artifactId>
-        <version>1.1.0</version>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-lambda-java-core</artifactId>
+      <version>1.1.0</version>
     </dependency>
     <dependency>
-        <groupId>com.amazonaws</groupId>
-        <artifactId>aws-lambda-java-events</artifactId>
-        <version>2.2.7</version>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-lambda-java-events</artifactId>
+      <version>2.2.7</version>
     </dependency>
     <dependency>
-        <groupId>com.amazonaws</groupId>
-        <artifactId>aws-java-sdk-s3</artifactId>
-        <version>1.11.163</version>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-s3</artifactId>
+      <version>1.11.163</version>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
@@ -83,7 +83,6 @@
         <includes>
           <include>calabash/</include>
           <include>idml2xml/</include>
-          <include>sample/</include>
           <include>schema/</include>
           <include>xmlcatalog/</include>
           <include>xpl/</include>
@@ -91,12 +90,21 @@
           <include>xslt-util/</include>
         </includes>
         <excludes>
-          <exclude>calabash/distro/</exclude>
-          <exclude>calabash/docs/</exclude>
-          <exclude>calabash/lib/</exclude>
-          <exclude>calabash/saxon/</exclude>
-          <exclude>calabash/schemas/</exclude>
+          <exclude>calabash/distro/docs/**</exclude>
+          <exclude>calabash/distro/lib/**</exclude>
+          <exclude>calabash/docs/**</exclude>
+          <exclude>calabash/extensions/transpect/epubcheck-extension/**</exclude>
+          <exclude>calabash/extensions/transpect/image-props-extension/**</exclude>
+          <exclude>calabash/extensions/transpect/image-transform-extension/**</exclude>
+          <exclude>calabash/extensions/transpect/mathtype-extension/**</exclude>
+          <exclude>calabash/extensions/transpect/rng-extension/**</exclude>
+          <exclude>calabash/extensions/transpect/unzip-extension/io/**</exclude>
+          <exclude>calabash/extensions/transpect/unzip-extension/jar/**</exclude>
+          <exclude>calabash/extensions/transpect/unzip-extension/src/**</exclude>
+          <exclude>calabash/lib/**</exclude>
+          <exclude>calabash/saxon/**</exclude>
           <exclude>calabash/*.*</exclude>
+          <exclude>sample/**</exclude>
         </excludes>
       </resource>
     </resources>
