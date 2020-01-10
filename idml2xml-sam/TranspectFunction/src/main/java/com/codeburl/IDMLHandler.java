@@ -31,7 +31,7 @@ public class IDMLHandler {
 
     logger.info("Handling S3 PUT to " + input_bucket + "/" + input_key);
 
-		final String input_fn = "/tmp/hello-world.idml";
+		final String input_fn = "/tmp/input.idml";
     downloadInputIDML(input_bucket, input_key, input_fn);
     final String output_fn = invokeXProc(input_fn);
     logger.info("HUB XML output sent to " + output_fn);
@@ -40,8 +40,10 @@ public class IDMLHandler {
   }
 
   private String invokeXProc(String input_fn) throws IOException {
-    final String config_fn = this.getClass().getClassLoader().getResource("transpect-config.xml").toString();
-    final String xpl_fn = this.getClass().getClassLoader().getResource("xpl/idml2xml-frontend.xpl").toString();
+    final String config_fn = "/var/task/transpect-config.xml";
+    final String xpl_fn = "/var/task/xpl/idml2xml-frontend.xpl";
+    //final String config_fn = this.getClass().getClassLoader().getResource("transpect-config.xml").toString();
+    //final String xpl_fn = this.getClass().getClassLoader().getResource("xpl/idml2xml-frontend.xpl").toString();
     logger.info("Invoking XProc pipline (" + xpl_fn + ") with config " + config_fn);
     String output_fn = "/tmp/output.xml";
 		final String[] args = new String[5];
@@ -60,7 +62,7 @@ public class IDMLHandler {
 		try {
 			S3Object o = s3.getObject(bucket, key);
 			S3ObjectInputStream s3is = o.getObjectContent();
-      logger.info("Downloading IDML file from S3 to " + input_fn);
+      logger.info("Downloading IDML file from S3 (arn:aws:s3:::" + bucket + "/" + key + ") to " + input_fn);
 			FileOutputStream fos = new FileOutputStream(new File(input_fn));
 			byte[] read_buf = new byte[1024];
 			int read_len = 0;

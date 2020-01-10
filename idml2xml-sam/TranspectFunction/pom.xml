@@ -96,7 +96,11 @@
           <exclude>calabash/extensions/transpect/epubcheck-extension/**</exclude>
           <exclude>calabash/extensions/transpect/image-props-extension/**</exclude>
           <exclude>calabash/extensions/transpect/image-transform-extension/**</exclude>
-          <exclude>calabash/extensions/transpect/mathtype-extension/**</exclude>
+          <exclude>calabash/extensions/transpect/mathtype-extension/io/**</exclude>
+          <exclude>calabash/extensions/transpect/mathtype-extension/jar/**</exclude>
+          <exclude>calabash/extensions/transpect/mathtype-extension/java/**</exclude>
+          <exclude>calabash/extensions/transpect/mathtype-extension/lib/**</exclude>
+          <exclude>calabash/extensions/transpect/mathtype-extension/ruby/**</exclude>
           <exclude>calabash/extensions/transpect/rng-extension/**</exclude>
           <exclude>calabash/extensions/transpect/unzip-extension/io/**</exclude>
           <exclude>calabash/extensions/transpect/unzip-extension/jar/**</exclude>

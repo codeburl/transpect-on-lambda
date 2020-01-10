@@ -30,7 +30,7 @@ Resources:
       Handler: com.codeburl.IDMLHandler::handleEvent
       Environment:
         Variables:
-          JAVA_TOOL_OPTIONS: -Dxml.catalog.files=calabash/xmlcatalog/catalog.xml -Dlog4j.configurationFile=log4j2.xml
+          JAVA_TOOL_OPTIONS: -Dxml.catalog.files=/var/task/calabash/xmlcatalog/catalog.xml -Dlog4j.configurationFile=log4j2.xml
           OUTPUT_BUCKET: !GetAtt ResultXMLBucket.Arn
       Events:
         BucketEvent:
