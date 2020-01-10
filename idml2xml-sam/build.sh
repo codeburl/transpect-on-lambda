@@ -5,11 +5,12 @@ if [ ! -d TranspectFunction/src/resources/idml2xml-frontend ]; then
   echo "Downloading Transpect dependencies..."
   echo
   git clone --recursive https://github.com/transpect/idml2xml-frontend TranspectFunction/src/resources/idml2xml-frontend
+  rm -fr TranspectFunction/src/resources/idml2xml-frontend/.git
   echo
 fi
 
 # I eventually gave up on having Maven help me with this unpublished JAR
-if [ ! -d TranspectFunction/src/main/java/com/codeburl/UnZip.java ]; then
+if [ ! -d TranspectFunction/src/main/java/com/codeburl/ ]; then
   echo "Linking UnZip extension..."
   echo "// DO NOT EDIT" > TranspectFunction/src/main/java/com/codeburl/UnZip.java
   echo "// SEE https://github.com/transpect/unzip-extension for ORIGINAL FILE" >> TranspectFunction/src/main/java/com/codeburl/UnZip.java

@@ -8,16 +8,19 @@ Description: >
   $ ./deploy.sh
 
 Parameters:
-  DeploymentArtifactsBucket:
+  SourceIDMLBucketNamePrefix:
     Type: String
-    Description: "The name for the S3 Bucket holding deployment artifacts (see bucket_for_deployment_artifacts.yml)"
+    Default: source-idml-bucket
+    Description: "CloudFormation has problems creating event handlers on new buckets, so we'll make a unique name with this prefix and the AWS account number."
     MinLength: 4
-    MaxLength: 253
+    MaxLength: 53
+
   
 Globals:
   Function:
-    Timeout: 120
+    MemorySize: 512
     Runtime: java8
+    Timeout: 120
 
 Resources:
   TranspectFunction:
@@ -28,7 +31,7 @@ Resources:
       Environment:
         Variables:
           JAVA_TOOL_OPTIONS: -Dxml.catalog.files=calabash/xmlcatalog/catalog.xml -Dlog4j.configurationFile=log4j2.xml
-          OUTPUT_BUCKET: !GetAtt ResultXMLBucket.arn
+          OUTPUT_BUCKET: !GetAtt ResultXMLBucket.Arn
       Events:
         BucketEvent:
           Type: S3
@@ -44,11 +47,7 @@ Resources:
           - Effect: Allow
             Action:
               - s3:GetObject
-            Resource: !GetAtt SourceIDMLBucket.Arn
-          - Effect: Allow
-            Action:
-              - s3:GetObject
-            Resource: ["arn:aws:s3:::codeburldev.com-files/hello-world.idml"]
+            Resource: !Sub "arn:aws:s3:::${SourceIDMLBucketNamePrefix}-${AWS::AccountId}"
           - Effect: Allow
             Action:
               - s3:PutObject
@@ -58,6 +57,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: BucketOwnerFullControl
+      BucketName: !Sub "${SourceIDMLBucketNamePrefix}-${AWS::AccountId}"
       VersioningConfiguration:
         Status: Enabled
       BucketEncryption:
@@ -69,7 +69,7 @@ Resources:
   SourceIDMLBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref SourceIDMLBucket
+      Bucket: !Sub "${SourceIDMLBucketNamePrefix}-${AWS::AccountId}"
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -78,7 +78,7 @@ Resources:
             Effect: Deny
             Principal: "*"
             Action: s3:PutObject
-            Resource: !Join [ "", [ !GetAtt SourceIDMLBucket.Arn, "/*" ] ]
+            Resource: !Sub "arn:aws:s3:::${SourceIDMLBucketNamePrefix}-${AWS::AccountId}/*"
             Condition:
               StringNotEquals: 
                 s3:x-amz-server-side-encryption: AES256
@@ -87,7 +87,7 @@ Resources:
             Effect: Deny
             Principal: "*"
             Action: s3:*
-            Resource: !Join [ "", [ !GetAtt SourceIDMLBucket.Arn, "/*" ] ]
+            Resource: !Sub "arn:aws:s3:::${SourceIDMLBucketNamePrefix}-${AWS::AccountId}/*"
             Condition:
               Bool:
                 aws:SecureTransport: false

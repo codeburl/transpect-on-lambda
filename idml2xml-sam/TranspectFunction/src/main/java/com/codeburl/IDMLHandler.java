@@ -40,8 +40,8 @@ public class IDMLHandler {
   }
 
   private String invokeXProc(String input_fn) throws IOException {
-    final String config_fn = "transpect-config.xml";
-    final String xpl_fn = "xpl/idml2xml-frontend.xpl";
+    final String config_fn = this.getClass().getClassLoader().getResource("transpect-config.xml").toString();
+    final String xpl_fn = this.getClass().getClassLoader().getResource("xpl/idml2xml-frontend.xpl").toString();
     logger.info("Invoking XProc pipline (" + xpl_fn + ") with config " + config_fn);
     String output_fn = "/tmp/output.xml";
 		final String[] args = new String[5];

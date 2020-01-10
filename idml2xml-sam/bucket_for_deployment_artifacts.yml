@@ -5,6 +5,7 @@ Description: >
   Prepare an S3 bucket for deployment artifacts used by AWS SAM
   $ . .env
   $ aws cloudformation create-stack \
+      --profile ${AWS_PROFILE-default} \
       --region us-east-1 \
       --stack-name=${IDML2XML_SAM_PREFIX}-artifacts-stack \
       --capabilities CAPABILITY_IAM \
