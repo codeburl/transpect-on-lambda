@@ -18,9 +18,9 @@ Parameters:
   
 Globals:
   Function:
-    MemorySize: 512
+    MemorySize: 1024
     Runtime: java8
-    Timeout: 120
+    Timeout: 900
 
 Resources:
   TranspectFunction:
@@ -31,7 +31,7 @@ Resources:
       Environment:
         Variables:
           JAVA_TOOL_OPTIONS: -Dxml.catalog.files=/var/task/calabash/xmlcatalog/catalog.xml -Dlog4j.configurationFile=log4j2.xml
-          OUTPUT_BUCKET: !GetAtt ResultXMLBucket.Arn
+          OUTPUT_BUCKET: !Ref ResultXMLBucket
       Events:
         BucketEvent:
           Type: S3
@@ -51,7 +51,7 @@ Resources:
           - Effect: Allow
             Action:
               - s3:PutObject
-            Resource: !GetAtt ResultXMLBucket.Arn
+            Resource: !Sub "${ResultXMLBucket.Arn}/*"
 
   SourceIDMLBucket:
     Type: AWS::S3::Bucket
@@ -65,33 +65,6 @@ Resources:
         - ServerSideEncryptionByDefault:
             SSEAlgorithm: AES256
 
-  # Encrypt the bucket  
-  SourceIDMLBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Sub "${SourceIDMLBucketNamePrefix}-${AWS::AccountId}"
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          -
-            Sid: DenyUnEncryptedObjectUploads
-            Effect: Deny
-            Principal: "*"
-            Action: s3:PutObject
-            Resource: !Sub "arn:aws:s3:::${SourceIDMLBucketNamePrefix}-${AWS::AccountId}/*"
-            Condition:
-              StringNotEquals: 
-                s3:x-amz-server-side-encryption: AES256
-          -
-            Sid: DenyInsecureConnections
-            Effect: Deny
-            Principal: "*"
-            Action: s3:*
-            Resource: !Sub "arn:aws:s3:::${SourceIDMLBucketNamePrefix}-${AWS::AccountId}/*"
-            Condition:
-              Bool:
-                aws:SecureTransport: false
-
   ResultXMLBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -102,34 +75,6 @@ Resources:
         ServerSideEncryptionConfiguration:
         - ServerSideEncryptionByDefault:
             SSEAlgorithm: AES256
-
-  # Encrypt the bucket  
-  ResultXMLBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref ResultXMLBucket
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          -
-            Sid: DenyUnEncryptedObjectUploads
-            Effect: Deny
-            Principal: "*"
-            Action: s3:PutObject
-            Resource: !Join [ "", [ !GetAtt ResultXMLBucket.Arn, "/*" ] ]
-            Condition:
-              StringNotEquals: 
-                s3:x-amz-server-side-encryption: AES256
-          -
-            Sid: DenyInsecureConnections
-            Effect: Deny
-            Principal: "*"
-            Action: s3:*
-            Resource: !Join [ "", [ !GetAtt ResultXMLBucket.Arn, "/*" ] ]
-            Condition:
-              Bool:
-                aws:SecureTransport: false
-
 
 Outputs:
   SourceIDMLBucket:
