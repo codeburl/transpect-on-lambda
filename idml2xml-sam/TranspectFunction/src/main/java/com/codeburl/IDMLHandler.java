@@ -25,7 +25,7 @@ public class IDMLHandler {
                         .withRegion(Regions.US_EAST_1)
                         .build();
 
-  public void handleEvent(S3Put event) throws IOException {
+  public String handleEvent(S3Put event) throws IOException {
     final String input_bucket = event.Records.get(0).s3.bucket.name;
     final String input_key = event.Records.get(0).s3.object.key;
 
@@ -35,8 +35,9 @@ public class IDMLHandler {
     downloadInputIDML(input_bucket, input_key, input_fn);
     final String output_fn = invokeXProc(input_fn);
     logger.info("HUB XML output sent to " + output_fn);
-    final String output_bucket = System.getenv("OUTPUT_BUCKET");
+    final String output_bucket= System.getenv("OUTPUT_BUCKET");
     final String result_arn = uploadOutputXML(output_bucket, output_fn);
+    return result_arn;
   }
 
   private String invokeXProc(String input_fn) throws IOException {
@@ -87,6 +88,7 @@ public class IDMLHandler {
     UUID uuid = UUID.randomUUID();
     final String output_key = uuid.toString() + ".xml";
     final String arn = "arn:aws:s3:::" + output_bucket + "/" + output_key;
+
 		try {
 			PutObjectRequest request = new PutObjectRequest(output_bucket, output_key, new File(output_fn));
 			ObjectMetadata metadata = new ObjectMetadata();
